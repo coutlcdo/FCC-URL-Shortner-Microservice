@@ -86,6 +86,12 @@ app.post("/api/shorturl/new", async function (req, res) {
   
   let rUrl = req.body.url;
   
+  if(/[htps]+\:\/*/g.test(rUrl) == true) {
+    rUrl = rUrl;
+  } else {
+    rUrl = "https://" + rUrl;
+  }
+  
   let r;
   function getRandomInt(max) {
     r = Math.floor(Math.random() * Math.floor(max));
