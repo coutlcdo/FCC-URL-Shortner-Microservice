@@ -70,8 +70,8 @@ app.route("/api/shorturl/new").post(function(req, res, next) {
   dns.lookup(url4Dns, (err, address, family)=>{
     
     if (!address) {
-      res.json({error: "invalid URL"});
-      //res.send(`<h2>Error! Invalid URL.</h2>`);
+      //res.json({error: "invalid URL"});
+      res.send(`<h2>Error! Invalid URL.</h2>`);
     } else {
       next();
     }
@@ -85,6 +85,12 @@ app.route("/api/shorturl/new").post(function(req, res, next) {
 app.post("/api/shorturl/new", async function (req, res) {
   
   let rUrl = req.body.url;
+  
+  if(/[htps]+\:\/*/g.test(rUrl) == true) {
+    rUrl = rUrl;
+  } else {
+    rUrl = "https://" + rUrl;
+  }
   
   let r;
   function getRandomInt(max) {
@@ -104,8 +110,8 @@ app.post("/api/shorturl/new", async function (req, res) {
       }
     });
     
-    res.json({original_url: rUrl, short_url: r});
-    //res.send(`<h2>Your shortned url is <a href='https://swamp-brace.glitch.me/api/shorturl/${r}'>[project_url]/api/shorturl/${r}</a></h2>`);
+    //res.json({original_url: rUrl, short_url: r});
+    res.send(`<h2>Your shortned url is <a href='https://swamp-brace.glitch.me/api/shorturl/${r}'>[project_url]/api/shorturl/${r}</a></h2>`);
     
   } else {
     
@@ -120,8 +126,8 @@ app.post("/api/shorturl/new", async function (req, res) {
             })
     
       //console.log(returnShortUrl);
-        res.json({original_url: aux, short_url: returnShortUrl});
-      //res.send(`<h2>The url posted is already on database, it's link is: <a href='https://swamp-brace.glitch.me/api/shorturl/${returnShortUrl}'>[project_url]/api/shorturl/${returnShortUrl}</a></h2>`);
+      //res.json({original_url: aux, short_url: returnShortUrl});
+      res.send(`<h2>The url posted is already on database, it's link is: <a href='https://swamp-brace.glitch.me/api/shorturl/${returnShortUrl}'>[project_url]/api/shorturl/${returnShortUrl}</a></h2>`);
 
       } catch(err) {
         // catch unexpected errors
@@ -141,7 +147,7 @@ app.get("/api/shorturl/:num", function (req, res) {
     var findShortUrlAndReturnRealUrl = await urls.findOne({short_url: aux})
         .then(function(data) {
             if (!data) {
-                // url not found
+                //url not found
             }
             return data.original_url;
         })
@@ -150,7 +156,7 @@ app.get("/api/shorturl/:num", function (req, res) {
     res.redirect(findShortUrlAndReturnRealUrl);
 
   } catch(err) {
-    // catch unexpected errors
+    //catch unexpected errors
   }};
   
   getRealUrl(aux);
